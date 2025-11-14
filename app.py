@@ -1,9 +1,23 @@
 import streamlit as st
 import pickle
 import requests
+from huggingface_hub import hf_hub_download
+
+@st.cache_resource
+def load_model():
+    model_path = hf_hub_download(
+        repo_id="studyworld21/Recommender",
+        filename="similarity.pkl"
+    )
+    
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+    
+    return model
+
+similarity = load_model()
 
 df = pickle.load(open("movies.pkl",'rb'))
-similarity = pickle.load(open("similarity.pkl","rb"))
 movie_names = df["title"].values
 st.title("Movie Recommender System")
 
@@ -76,4 +90,5 @@ if st.button("Recommend"):
         st.image(posters[3])
     with col5:
         st.text(movies[4])
+
         st.image(posters[4])
